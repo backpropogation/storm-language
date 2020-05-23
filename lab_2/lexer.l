@@ -89,11 +89,11 @@ EXP	([Ee][-+]?[0-9]+)
 "break"   { return token::BREAK; }
 "continue" { return token::CONTINUE; }
 "return"  { return token::RETURN; }
-"vox"     { return token::VOX; }
-"wouf"    { return token::WOUF; }
+"input"   { return token::INPUT; }
+"echa"    { return token::ECHA; }
 "func"    { return token::FUNC; }
 "main"    { return token::MAIN; }
-"->"      { return token::FUNCRETURN; }
+
 
 [[:alpha:]_][[:alnum:]_]*       { yylval->var = new std::string(yytext, yyleng);
                                   return token::VARIABLE;

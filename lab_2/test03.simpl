@@ -1,9 +1,10 @@
-int a = 10;
-if (a >= 10)
+int a = 10
+int arr = int[123]
+if (a > arr)
 {
-    wouf(1);
+    echa(1)
 }
 else
 {
-    wouf(2);
+    echa(2)
 }

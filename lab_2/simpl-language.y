@@ -92,14 +92,14 @@ static TSymbolTable* currentTable = g_TopLevelUserVariableTable;
 %token          BREAK           "break"
 %token          CONTINUE        "continue"
 %token          RETURN          "return"
-%token          VOX             "vox"
-%token          WOUF            "wouf"
+%token          INPUT            "input"
+%token          ECHA            "echa"
 %token          FUNCRETURN      "->"
 %token          FUNC            "func"
 %token          MAIN            "main"
 %token IFX
 
-%type <a> exp cond_stmt assignment statement compound_statement stmtlist stmtlist_tail prog declarations loop_stmt for_head while_head wouf vox func main_func type
+%type <a> exp cond_stmt assignment statement compound_statement stmtlist stmtlist_tail prog declarations loop_stmt for_head while_head echa input func main_func type
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -160,17 +160,17 @@ stmtlist_tail :
 ;
 
 statement :
-    assignment | cond_stmt | declarations | compound_statement | loop_stmt | wouf | vox | func | RETURN SEMICOLON
+    assignment | cond_stmt | declarations | compound_statement | loop_stmt | echa | input | func | RETURN
         {
             $$ = CreateControlFlowNode(typeJumpStatement, NULL, NULL, NULL);
         }
-    | BREAK SEMICOLON
+    | BREAK
         {
             if (g_LoopNestingCounter <= 0)
                 yyerror("'break' not inside loop");
             $$ = CreateControlFlowNode(typeJumpStatement, NULL, NULL, NULL);
         }
-    | CONTINUE SEMICOLON
+    | CONTINUE
         {
             if (g_LoopNestingCounter <= 0)
                 yyerror("'continue' not inside loop");
@@ -194,7 +194,7 @@ compound_statement :
 
 /* ASSIGNMENT */
 assignment :
-    VARIABLE ASSIGN exp SEMICOLON
+    VARIABLE ASSIGN exp
     {
         TSymbolTableElementPtr var = LookupUserVariableTableRecursive(currentTable, *$1);
         if (NULL == var)
@@ -211,7 +211,7 @@ assignment :
 
 /* DECLARATION */
 declarations :
-    INT VARIABLE ASSIGN exp SEMICOLON
+    INT VARIABLE ASSIGN exp
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -235,7 +235,7 @@ declarations :
                 $$ = CreateAssignmentNode(var, $4);
             }
         }
-    | FLOAT VARIABLE ASSIGN exp SEMICOLON
+    | FLOAT VARIABLE ASSIGN exp
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -259,7 +259,7 @@ declarations :
                 $$ = CreateAssignmentNode(var, $4);
             }
         }
-    | CHAR VARIABLE ASSIGN exp SEMICOLON
+    | CHAR VARIABLE ASSIGN exp
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -283,7 +283,7 @@ declarations :
                 $$ = CreateAssignmentNode(var, $4);
             }
         }
-    | BOOL VARIABLE ASSIGN exp SEMICOLON
+    | BOOL VARIABLE ASSIGN exp
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -308,7 +308,7 @@ declarations :
             }
         }
 // arrays
-    | INT VARIABLE ASSIGN INT OPENSQRBRACE exp CLOSESQRBRACE SEMICOLON
+    | INT VARIABLE ASSIGN INT OPENSQRBRACE exp CLOSESQRBRACE
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -332,7 +332,7 @@ declarations :
                 $$ = CreateAssignmentNode(var, CreateNumberNode(new int[reinterpret_cast<TNumericValueNode *>($6)->iNumber]));
             }
         }
-    | FLOAT VARIABLE ASSIGN FLOAT OPENSQRBRACE exp CLOSESQRBRACE SEMICOLON
+    | FLOAT VARIABLE ASSIGN FLOAT OPENSQRBRACE exp CLOSESQRBRACE
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -356,7 +356,7 @@ declarations :
                 $$ = CreateAssignmentNode(var, CreateNumberNode(new double[reinterpret_cast<TNumericValueNode *>($6)->iNumber]));
             }
         }
-    | CHAR VARIABLE ASSIGN CHAR OPENSQRBRACE exp CLOSESQRBRACE SEMICOLON
+    | CHAR VARIABLE ASSIGN CHAR OPENSQRBRACE exp CLOSESQRBRACE
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -380,7 +380,7 @@ declarations :
                 $$ = CreateAssignmentNode(var, CreateNumberNode(new char[reinterpret_cast<TNumericValueNode *>($6)->iNumber]));
             }
         }
-    | BOOL VARIABLE ASSIGN BOOL OPENSQRBRACE exp CLOSESQRBRACE SEMICOLON
+    | BOOL VARIABLE ASSIGN BOOL OPENSQRBRACE exp CLOSESQRBRACE
         {
             TSymbolTableElementPtr var = LookupUserVariableTable(currentTable, *$2);
             if (NULL != var)
@@ -430,7 +430,7 @@ loop_stmt :
             $$ = CreateControlFlowNode(typeWhileStatement, $1, $2, NULL);
             --g_LoopNestingCounter;
         }
-    | DO statement while_head SEMICOLON
+    | DO statement while_head
         {
             $$ = CreateControlFlowNode(typeWhileStatement, $3, $2, NULL);
             --g_LoopNestingCounter;
@@ -535,16 +535,16 @@ exp :
 ;
 
 /* INPUT */
-vox :
-    VOX OPENPAREN exp CLOSEPAREN SEMICOLON
+input :
+    INPUT OPENPAREN exp CLOSEPAREN
         {
             $$ = CreateNodeAST(typeInput, "input", $3, NULL);
         }
 ;
 
 /* OUTPUT */
-wouf :
-    WOUF OPENPAREN exp CLOSEPAREN SEMICOLON
+echa :
+    ECHA OPENPAREN exp CLOSEPAREN
         {
             $$ = CreateNodeAST(typeOutput, "output", $3, NULL);
         }

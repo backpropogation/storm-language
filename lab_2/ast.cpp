@@ -541,11 +541,11 @@ void PrintAST(NodeAST* a, int level)
     PrintAST(a->left, level);
     return;
   case typeInput:
-    std::cout << "vox" << std::endl;
+    std::cout << "input" << std::endl;
     PrintAST(a->left, level);
     return;
   case typeOutput:
-    std::cout << "wouf" << std::endl;
+    std::cout << "echa" << std::endl;
     PrintAST(a->left, level);
     return;
   case typeReturn:

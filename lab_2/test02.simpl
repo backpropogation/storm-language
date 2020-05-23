@@ -1,10 +1,10 @@
-int a = 1;
-vox(a);
+int a = 1
+input(a)
 if (a > 10)
 {
-    wouf(1);
+    echa(1)
 }
 else
 {
-    wouf(-1);
+    echa(-1)
 }
