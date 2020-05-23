@@ -1,0 +1,10 @@
+int a = 1;
+vox(a);
+if (a > 10)
+{
+    wouf(1);
+}
+else
+{
+    wouf(-1);
+}
